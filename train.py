@@ -10,17 +10,8 @@ import pandas as pd
 from azureml.core.run import Run
 from azureml.data.dataset_factory import TabularDatasetFactory
 
-# TODO: Create TabularDataset using TabularDatasetFactory
-# Data is located at:
-# "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
-
-ds = ### YOUR CODE HERE ###
-
-x, y = clean_data(ds)
-
-# TODO: Split data into train and test sets.
-
-### YOUR CODE HERE ###a
+filepath = "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
+ds = TabularDatasetFactory.from_delimited_files(path=filepath)
 
 run = Run.get_context()
 
@@ -48,18 +39,31 @@ def clean_data(data):
     x_df["day_of_week"] = x_df.day_of_week.map(weekdays)
     x_df["poutcome"] = x_df.poutcome.apply(lambda s: 1 if s == "success" else 0)
 
-    y_df = x_df.pop("y").apply(lambda s: 1 if s == "yes" else 0)
-    
+    x_df['y'] = x_df["y"].apply(lambda s: 1 if s == "yes" else 0)
+    #y_df = x_df.pop("y").apply(lambda s: 1 if s == "yes" else 0)
+    x_df = x_df.sample(frac=1).reset_index(drop=True)
+    split = int(x_df.shape[0]*0.8)
+    train_data = x_df.iloc[:split,:]
+    test_data = x_df.iloc[split:,:]
+
+    return train_data, test_data
+
+train, test = clean_data(ds)
+x_train = train.drop(['y'], axis=1)
+y_train = trail.loc['y']
+x_test = test.drop(['y'], axis=1)
+y_test = test.loc['y']
 
 def main():
     # Add arguments to script
     parser = argparse.ArgumentParser()
-
+    
+    parser.add_argument('--kernel', type=String, default='linear', help="Kernel selection")
     parser.add_argument('--C', type=float, default=1.0, help="Inverse of regularization strength. Smaller values cause stronger regularization")
     parser.add_argument('--max_iter', type=int, default=100, help="Maximum number of iterations to converge")
 
     args = parser.parse_args()
-
+    run.log("Kernel:", np.float(args.kernel))
     run.log("Regularization Strength:", np.float(args.C))
     run.log("Max iterations:", np.int(args.max_iter))
 
@@ -70,3 +74,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
