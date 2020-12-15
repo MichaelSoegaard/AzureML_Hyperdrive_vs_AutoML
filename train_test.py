@@ -7,13 +7,13 @@ import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
-from azureml.core.run import Run
-from azureml.data.dataset_factory import TabularDatasetFactory
+#from azureml.core.run import Run
+#from azureml.data.dataset_factory import TabularDatasetFactory
 
-filepath = "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
-ds = TabularDatasetFactory.from_delimited_files(path=filepath)
-
-run = Run.get_context()
+#filepath = "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
+#ds = TabularDatasetFactory.from_delimited_files(path=filepath)
+ds = pd.read_csv('bankmarketing_train.csv')
+#run = Run.get_context()
 
 def clean_data(data):
     # Dict for cleaning data
@@ -21,7 +21,7 @@ def clean_data(data):
     weekdays = {"mon":1, "tue":2, "wed":3, "thu":4, "fri":5, "sat":6, "sun":7}
 
     # Clean and one hot encode data
-    x_df = data.to_pandas_dataframe().dropna()
+    x_df = data.dropna()
     jobs = pd.get_dummies(x_df.job, prefix="job")
     x_df.drop("job", inplace=True, axis=1)
     x_df = x_df.join(jobs)
@@ -38,8 +38,8 @@ def clean_data(data):
     x_df["month"] = x_df.month.map(months)
     x_df["day_of_week"] = x_df.day_of_week.map(weekdays)
     x_df["poutcome"] = x_df.poutcome.apply(lambda s: 1 if s == "success" else 0)
-    
-    x_df['y'] = x_df.y.apply(lambda s: 1 if s == "yes" else 0)
+
+    x_df['y'] = x_df["y"].apply(lambda s: 1 if s == "yes" else 0)
     #y_df = x_df.pop("y").apply(lambda s: 1 if s == "yes" else 0)
     x_df = x_df.sample(frac=1).reset_index(drop=True)
     split = int(x_df.shape[0]*0.8)
@@ -49,30 +49,32 @@ def clean_data(data):
     return train_data, test_data
 
 train, test = clean_data(ds)
+print(train.head(3))
 x_train = train.drop(['y'], axis=1)
-y_train = train.y
+y_train = train.loc['y']
 x_test = test.drop(['y'], axis=1)
-y_test = test.y
+y_test = test.loc['y']
+print('Created all!!')
 
-def main():
-    # Add arguments to script
-    parser = argparse.ArgumentParser()
+# def main():
+#     # Add arguments to script
+#     parser = argparse.ArgumentParser()
     
-    #parser.add_argument('--kernel', type=str, default='linear', help="Kernel selection")
-    parser.add_argument('--C', type=float, default=1.0, help="Inverse of regularization strength. Smaller values cause stronger regularization")
-    parser.add_argument('--max_iter', type=int, default=100, help="Maximum number of iterations to converge")
+#     parser.add_argument('--kernel', type=String, default='linear', help="Kernel selection")
+#     parser.add_argument('--C', type=float, default=1.0, help="Inverse of regularization strength. Smaller values cause stronger regularization")
+#     parser.add_argument('--max_iter', type=int, default=100, help="Maximum number of iterations to converge")
 
-    args = parser.parse_args()
-    #run.log("Kernel:", np.string(args.kernel))
-    run.log("Regularization Strength:", np.float(args.C))
-    run.log("Max iterations:", np.int(args.max_iter))
+#     args = parser.parse_args()
+#     run.log("Kernel:", np.float(args.kernel))
+#     run.log("Regularization Strength:", np.float(args.C))
+#     run.log("Max iterations:", np.int(args.max_iter))
 
-    model = LogisticRegression(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
+#     model = LogisticRegression(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
 
-    accuracy = model.score(x_test, y_test)
-    run.log("Accuracy", np.float(accuracy))
+#     accuracy = model.score(x_test, y_test)
+#     run.log("Accuracy", np.float(accuracy))
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
 
