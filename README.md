@@ -6,11 +6,35 @@ In this project, we build and optimize an Azure ML pipeline using the Python SDK
 This model is then compared to an Azure AutoML run.
 
 ## Summary
-**In 1-2 sentences, explain the problem statement: e.g "This dataset contains data about... we seek to predict..."**
+In this task we're going to  look at the UCI Bank Marketing dataset where we are going to predict which of their clients are going to open a term deposit with the bank. So it's at binary classification problem. -Is the client going to open an account? -yes or no?
 
-**In 1-2 sentences, explain the solution: e.g. "The best performing model was a ..."**
+We will try two diffenrent approches to solving this task by using:
+..*Logistic Regression (Scikit-Learn) with a hyperparameter search using Azure's Hyperdrive.
+..*Azure's Auto Machine Learning (AML) 
+Eventhough the AML has different algorithms at disposal it actually isn't much better than a logisitc regression which got an accuracy of 91.55% compared to the AML at 91.74%
 
 ## Scikit-learn Pipeline
+First we download the dataset from the url given, using the AzureDataFactory class.
+Then the data is cleaned in various steps embedded in a method ('clean_data').
+Data is cleaned and one-hot encoded, eg. by changing yes/no strings to binary 1/0 data.
+Then data is split into 80% train set and 20% test set before each set is split into features and targets ('y').
+
+At this point the dataset in handed over to hyperparametertuning using Hyperdrive. I chose to search over three different features:
+..*"Kernel"
+..*"C"
+..*"Max iterations"
+These are part of the parameters used in Sklearns Logistic Regression.
+https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
+
+
+
+
+in which some preprocessing steps were performed like converting categorical variable to binary encoding, one hot encoding,etc and then the dataset is split in ratio of 70:30 (train/test) for training and testing and sklearn's LogisticRegression Class is used to define Logistic Regression model.
+A SKLearn estimator which is used for training in Scikit-learn experiments is used here and it takes training scripts and performs the training on the compute. This estimator will later be passed to the HyperDrive Config script.
+Then a HyperDrive Config is created using the estimator, parameter sampler and a policy and the HyperDrive run is executed in the experiment.
+The hyperparameters which are needed to be tuned are defined in the parameter sampler. The hyperparameters that can be tuned here are C and max_iter. C is the inverse regularization parameter and max_iter is the maximum number of iterations.
+The train.py script contains all the steps needed to train and test the model which are data retrieval, data cleaning and pre-processing, data splitting into train and test data, defining the scikit-learn model and training the model on train data and predicting it on the test data to get the accuracy and then saving the model.
+Finally ,the best run of the hyperdrive is noted and the best model in the best run is saved.
 **Explain the pipeline architecture, including data, hyperparameter tuning, and classification algorithm.**
 
 **What are the benefits of the parameter sampler you chose?**
