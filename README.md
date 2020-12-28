@@ -44,5 +44,4 @@ Preprocessing and split was the same for both Hyperdrive and AML models. The mai
 A relevant next step could be to make a Hyperdrive run on the XGBoost Ensemble model AML choose. This way we can fione tune the model and probably increase accuracy a bit. Another option would be to try the two pipelines on different data to get a more realistic (weighted) comparison.
 
 ## Proof of cluster clean up
-**If you did not delete your compute cluster in the code, please complete this section. Otherwise, delete this section.**
-**Image of cluster marked for deletion**
+![alt text](https://github.com/MichaelSoegaard/nd00333_AZMLND_Optimizing_a_Pipeline_in_Azure-Starter_Files/blob/master/img/delete_cluster.png "Delete cluster")
