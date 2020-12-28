@@ -10,8 +10,16 @@ import pandas as pd
 from azureml.core.run import Run
 from azureml.data.dataset_factory import TabularDatasetFactory
 
+# TODO: Create TabularDataset using TabularDatasetFactory
+# Data is located at:
+# "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
+
 filepath = "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
 ds = TabularDatasetFactory.from_delimited_files(path=filepath)
+
+#
+
+#
 
 run = Run.get_context()
 
@@ -48,29 +56,38 @@ def clean_data(data):
 
     return train_data, test_data
 
+
+# +
 train, test = clean_data(ds)
+
 x_train = train.drop(['y'], axis=1)
 y_train = train.y
 x_test = test.drop(['y'], axis=1)
 y_test = test.y
 
+
+# -
+
 def main():
     # Add arguments to script
     parser = argparse.ArgumentParser()
     
-    #parser.add_argument('--kernel', type=str, default='linear', help="Kernel selection")
+    parser.add_argument('--solver', type=str, default='lbfgs', help="Solver selection")
     parser.add_argument('--C', type=float, default=1.0, help="Inverse of regularization strength. Smaller values cause stronger regularization")
     parser.add_argument('--max_iter', type=int, default=100, help="Maximum number of iterations to converge")
 
     args = parser.parse_args()
-    #run.log("Kernel:", np.string(args.kernel))
+    run.log("Solver:", np.string_(args.solver))
     run.log("Regularization Strength:", np.float(args.C))
     run.log("Max iterations:", np.int(args.max_iter))
 
-    model = LogisticRegression(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
+    model = LogisticRegression(solver=args.solver, C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
 
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
+
+    os.makedirs('outputs', exist_ok=True)
+    joblib.dump(model, 'outputs/model.joblib')
 
 if __name__ == '__main__':
     main()
