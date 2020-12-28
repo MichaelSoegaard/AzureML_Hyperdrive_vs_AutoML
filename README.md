@@ -11,7 +11,7 @@ In this task we're going to  look at the UCI Bank Marketing dataset where we are
 We will try two diffenrent approches to solving this task by using:
 ..*Logistic Regression (Scikit-Learn) with a hyperparameter search using Azure's Hyperdrive.
 ..*Azure's Auto Machine Learning (AML) 
-Eventhough the AML has different algorithms at disposal it actually isn't much better than a logisitc regression which got an accuracy of 91.55% compared to the AML at 91.74%
+Eventhough the AML has different algorithms at disposal it actually isn't much better than a logisitc regression which got an accuracy of 91.55% compared to the AML at 91.71%
 
 ## Scikit-learn Pipeline
 The Scikit-learn pipeline is written in the script "train.py" where we will handle all the preprocession and training.
@@ -37,7 +37,9 @@ For the hyperparameter search there are three different approaches: Baysian, Gri
 After training of each sampling the model is tested on test set, accuracy noted and model saved. At the end of the Hyperdrive run the model with the best accuracy is selected.
 
 ## AutoML
-The best performing model was a Soft Voting Ensemble found using AutoML. It uses XGBoost Classifier with a standard scaler wrapper
+The best performing model was a Stack Ensemble found using AutoML. It is promised of 1 LightGBM classifier and 5 individual XGBoost Classifiers.
+
+![alt text](https://github.com/MichaelSoegaard/nd00333_AZMLND_Optimizing_a_Pipeline_in_Azure-Starter_Files/blob/master/img/AML_runs.png "AutoML runs")
 
 ## Pipeline comparison
 Preprocessing and split was the same for both Hyperdrive and AML models. The main difference is that AML has many different algorithms at its disposal, thus it should have a better chance of getting a the best accuracy. In contrary, when using Hyperdrive we are actually fine tuning our Logistic regression model. The two models are almost equally good in this case. I would have thought AML would get an inferior accuracy. But it might not be the case becuase of the nature of the data.
