@@ -29,7 +29,7 @@ At this point the dataset in handed over to hyperparametertuning using Hyperdriv
 These are part of the parameters used in SKlearns Logistic Regression.
 https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
 
-![alt text](https://github.com/MichaelSoegaard/nd00333_AZMLND_Optimizing_a_Pipeline_in_Azure-Starter_Files/blob/master/img/hyperdrive.png "Hyperdrive runs")
+![alt text](https://github.com/MichaelSoegaard/nd00333_AZMLND_Optimizing_a_Pipeline_in_Azure-Starter_Files/blob/master/img/Hyperdrive.png "Hyperdrive runs")
 
 For earlystopping we are using Bandit policy. This is a policy based on slack factor. In this case, if accuracy of the current run isn't within the slack amount from the best run, then the current run is terminated. This saves us some compute usage.
 
