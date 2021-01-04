@@ -9,8 +9,8 @@ This model is then compared to an Azure AutoML run.
 In this task we're going to  look at the UCI Bank Marketing dataset where we are going to predict which of their clients are going to open a term deposit with the bank. So it's at binary classification problem. -Is the client going to open an account? -yes or no?
 
 We will try two diffenrent approches to solving this task by using:
-  *Logistic Regression (Scikit-Learn) with a hyperparameter search using Azure's Hyperdrive.
-  *Azure's Auto Machine Learning (AML) 
+  * Logistic Regression (Scikit-Learn) with a hyperparameter search using Azure's Hyperdrive.
+  * Azure's Auto Machine Learning (AML) 
 Eventhough the AML has different algorithms at disposal it actually isn't much better than a logisitc regression which got an accuracy of 91.55% compared to the AML at 91.71%
 
 ## Scikit-learn Pipeline
